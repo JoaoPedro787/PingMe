@@ -3,12 +3,15 @@ from typing import Annotated
 from sqlmodel import create_engine, SQLModel, Session
 
 engine = create_engine(
-    "postgresql://postgres:root@localhost:5432/onlinechat", echo=True
+    "postgresql://postgres:root@localhost:5432/onlinechat", echo=False
 )
 
 
 # Apenas no startup da api
 def create_db_and_tables():
+    # Reseta tudo, para testes
+    # SQLModel.metadata.drop_all(engine)
+
     SQLModel.metadata.create_all(engine)
 
 

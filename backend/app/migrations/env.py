@@ -8,6 +8,7 @@ from alembic import context
 
 # Models devem ser importados aqui
 from src.auth.models import User
+from src.chat.models import Chat, Message, ChatUser
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

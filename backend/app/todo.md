@@ -1,0 +1,3 @@
+decidir se vou fazer erros mais detalhados para o JWT
+
+como expiração e etc...

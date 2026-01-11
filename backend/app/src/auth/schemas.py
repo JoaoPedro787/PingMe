@@ -1,24 +1,35 @@
-from pydantic import BaseModel
+from sqlmodel import SQLModel, Field
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 
-class UserBase(BaseModel):
+class UserBase(SQLModel):
     username: str
-    email: EmailStr = Field(unique=True, nullable=False)
+    email: EmailStr
     profile_image: str
 
 
 class UserCreate(UserBase):
-    pass
+    password: str = Field(min_length=8)
+
+
+class UserLogin(BaseModel):
+    identifier: str
+    password: str
 
 
 class UserUpdate(UserBase):
     disabled: bool
 
 
-class UserPublic(BaseModel):
+class UserPublic(SQLModel):
     id: int
     username: str
     profile_image: str
     disabled: bool
     joined_in: datetime
+
+
+class Token(BaseModel):
+    user_id: int
+    exp: datetime
