@@ -2,8 +2,10 @@ from fastapi.routing import APIRouter
 from fastapi import Response
 from typing import Annotated
 from database import SessionDep
+from config import settings
 from .schemas import UserPublic, UserCreate, UserLogin
 from .exceptions import UserNotFound
+from .utils import format_to_datetime
 from . import services
 
 
@@ -35,8 +37,8 @@ def authenticate_user(user: UserLogin, session: SessionDep, response: Response):
 
     return response.set_cookie(
         key="access_token",
-        value=access_token["encoded"],
+        value=access_token,
         httponly=True,
         samesite="strict",
-        expires=access_token["expire_date"],
+        expires=format_to_datetime(type="DAY", exp=settings.COOKIE_EXP_DAY),
     )

@@ -28,8 +28,3 @@ class UserPublic(SQLModel):
     profile_image: str
     disabled: bool
     joined_in: datetime
-
-
-class Token(BaseModel):
-    user_id: int
-    exp: datetime

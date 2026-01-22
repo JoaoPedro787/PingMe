@@ -1,7 +1,7 @@
 from fastapi import Request, Cookie, HTTPException, status
 from typing import Annotated
 from config import settings
-from .exceptions import TokenUnauthorized
+from .exceptions import TokenExpired, TokenInvalid
 import jwt
 
 
@@ -15,13 +15,18 @@ def validate_user_token(
             key=settings.TOKEN_KEY,
         )
 
-        request.state.user = decoded.user_id
+        request.state.user = decoded["user_id"]
+
+    except jwt.ExpiredSignatureError:
+        raise TokenExpired()
+
     except:
-        raise TokenUnauthorized()
+        raise TokenInvalid()
 
 
 def get_current_user(request: Request):
     user = getattr(request.state, "user", None)
     if not user:
-        raise TokenUnauthorized()
+        print("User not authenticated trying to use safe routes.")
+        raise TokenInvalid()
     return user

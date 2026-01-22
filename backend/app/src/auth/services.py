@@ -1,9 +1,8 @@
 from pwdlib import PasswordHash
 from sqlmodel import select, or_
 from .models import User
-from .schemas import Token
+from .utils import format_to_datetime
 from config import settings
-from datetime import datetime, timedelta, timezone
 import jwt
 
 password_hash = PasswordHash.recommended()
@@ -38,18 +37,12 @@ def authenticate_user(user, session):
 
     # Checking if password matchs with db
     if password_hash.verify(password=user.password, hash=user_db.hashed_password):
-        exp_date = datetime.now(tz=timezone.utc) + timedelta(
-            minutes=settings.TOKEN_EXP_MINUTE
-        )
-
-        payload = Token(user_id=user_db.id, exp=exp_date).model_dump()
+        payload = {
+            "user_id": user_db.id,
+            "exp": format_to_datetime(type="MINUTE", exp=settings.TOKEN_EXP_MINUTE),
+        }
 
         # Creating token
-        return {
-            "encoded": jwt.encode(
-                payload=payload,
-                algorithm=settings.TOKEN_ALGORITHM,
-                key=settings.TOKEN_KEY,
-            ),
-            "expire_date": exp_date,
-        }
+        return jwt.encode(
+            payload=payload, algorithm=settings.TOKEN_ALGORITHM, key=settings.TOKEN_KEY
+        )

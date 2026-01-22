@@ -1,16 +1,25 @@
 from sqlmodel import SQLModel
+from typing import Optional
+from datetime import datetime
 from enum import StrEnum
 
 
-class ChatPublic(SQLModel):
-    id: int
-    participants: list["ChatUserPublic"]
-    messages: list["MessagePublic"]
+class ChatUserIndividual(SQLModel):
+    chat_id: int
+    other_participant: "UserPublic"
 
 
-class ChatUserPublic(SQLModel):
-    id: int
-    user_id: int
+class ChatUserGlobal(SQLModel):
+    chat_id: int
+    unread_messages: int
+    last_message: "MessagePublic"
+    other_participant: "UserPublic"
+
+
+class MessagePagination(SQLModel):
+    items: list[Optional["MessagePublic"]] = []
+    next_cursor: Optional[int] = None
+    has_more: bool
 
 
 class MessageType(StrEnum):
@@ -24,4 +33,8 @@ class MessagePublic(SQLModel):
     id: int
     user_id: int
     content: str
-    type: MessageType
+    type: "MessageType"
+    created_at: datetime
+
+
+from auth.schemas import UserPublic
