@@ -12,7 +12,7 @@ class ChatUserIndividual(SQLModel):
 class ChatUserGlobal(SQLModel):
     chat_id: int
     unread_messages: int
-    last_message: "MessagePublic"
+    last_message: Optional["MessagePublic"] = None
     other_participant: "UserPublic"
 
 
@@ -20,6 +20,10 @@ class MessagePagination(SQLModel):
     items: list[Optional["MessagePublic"]] = []
     next_cursor: Optional[int] = None
     has_more: bool
+
+
+class ChatUserCreate(SQLModel):
+    other_user_id: int
 
 
 class MessageType(StrEnum):

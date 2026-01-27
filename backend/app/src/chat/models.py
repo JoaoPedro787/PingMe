@@ -7,6 +7,7 @@ from .schemas import MessageType
 
 class Chat(SQLModel, table=True):
     id: int = Field(primary_key=True)
+    participants: list["ChatUser"] = Relationship(back_populates="chat")
     messages: list["Message"] = Relationship(back_populates="chat")
 
 
@@ -17,7 +18,7 @@ class ChatUser(SQLModel, table=True):
     unread_messages: int = Field(default=0)
     last_message_id: Optional[int] = Field(foreign_key="message.id", nullable=True)
     last_message: "Message" = Relationship()
-    chat: "Chat" = Relationship()
+    chat: "Chat" = Relationship(back_populates="participants")
     user: "User" = Relationship()
 
 
